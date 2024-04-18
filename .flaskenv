@@ -1,0 +1,2 @@
+FLASK_APP=ip_list.py
+FLASK_DEBUG=1
