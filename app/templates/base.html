@@ -8,8 +8,25 @@
         {% endif %}
     </head>
     <body>
-        <div>IP address: <a href="{{ url_for('index') }}">Главная</a></div>
+
+        <div>
+            IP address
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a>|</a>
+            <a href="{{ url_for('login') }}">Вход</a>
+        </div>
         <hr>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </body>
 </html>
