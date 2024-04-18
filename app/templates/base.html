@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        {% if title %}
+            <title>{{ title }} — IP address</title>
+        {% else %}
+            <title>Главная страница</title>
+        {% endif %}
+    </head>
+    <body>
+        <div>IP address: <a href="{{ url_for('index') }}">Главная</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
