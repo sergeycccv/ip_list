@@ -6,17 +6,18 @@ from app import db
 from app.models import User
 
 class LoginForm(FlaskForm):
-    username = StringField('Пользователь', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
+    username = StringField('Пользователь', validators=[DataRequired('Введите имя пользователя')])
+    password = PasswordField('Пароль', validators=[DataRequired('Введите пароль')])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Вход')
 
 
 class RegistrationForm(FlaskForm):
     username = StringField('Пользователь', validators=[DataRequired()])
-    email = StringField('Почта', validators=[DataRequired(), Email()])
+    email = StringField('Почта', validators=[DataRequired(), Email('Некорректная почта')])
     password = PasswordField('Пароль', validators=[DataRequired()])
-    password2 = PasswordField('Подтверждение пароля', validators=[DataRequired(), EqualTo('password')])
+    password2 = PasswordField('Подтверждение пароля', \
+                              validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')])
     submit = SubmitField('Зарегистрироваться')
 
     def validate_username(self, username):
