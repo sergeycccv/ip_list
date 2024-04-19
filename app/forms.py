@@ -49,3 +49,8 @@ class EditProfileForm(FlaskForm):
                 User.username == self.username.data))
             if user is not None:
                 raise ValidationError('Это имя пользователя уже занято')
+
+
+# Форма для подписки и отмены подписки
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')

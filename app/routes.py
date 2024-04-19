@@ -7,6 +7,7 @@ from app.models import User
 from urllib.parse import urlsplit
 from datetime import datetime, timezone
 import sqlalchemy as sa
+from app.forms import EmptyForm
 
 @app.route('/')
 @app.route('/index')
@@ -73,8 +74,8 @@ def user(username):
         {'author': user, 'body': 'Test post #1'},
         {'author': user, 'body': 'Test post #2'}
     ]
-    return render_template('user.html', user=user, posts=posts)
-
+    form = EmptyForm()
+    return render_template('user.html', user=user, posts=posts, form=form)
 
 # Запрос времени после каждого обращения к БД
 @app.before_request
@@ -98,3 +99,45 @@ def edit_profile():
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+
+@app.route('/follow/<username>', methods=['POST'])
+@login_required
+def follow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == username))
+        if user is None:
+            flash(f'Пользователь {username} не найден')
+            return redirect(url_for('index'))
+        if user == current_user:
+            flash('Вы не можете подписаться на себя!')
+            return redirect(url_for('user', username=username))
+        current_user.follow(user)
+        db.session.commit()
+        flash(f'Вы подписаны на {username}!')
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == username))
+        if user is None:
+            flash(f'Пользователь {username} не найден.')
+            return redirect(url_for('index'))
+        if user == current_user:
+            flash('Вы не можете отписаться от себя!')
+            return redirect(url_for('user', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash(f'Вы отменили подписку на {username}.')
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('index'))
