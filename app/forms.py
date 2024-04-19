@@ -54,3 +54,9 @@ class EditProfileForm(FlaskForm):
 # Форма для подписки и отмены подписки
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+
+class PostForm(FlaskForm):
+    post = TextAreaField('Добавить пост', validators=[
+        DataRequired('Произошла какая-то ошибка...'), Length(min=1, max=140)])
+    submit = SubmitField('Добавить')
