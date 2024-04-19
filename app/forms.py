@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 import sqlalchemy as sa
 from app import db
 from app.models import User
+
 
 class LoginForm(FlaskForm):
     username = StringField('Пользователь', validators=[DataRequired('Введите имя пользователя')])
@@ -31,3 +32,9 @@ class RegistrationForm(FlaskForm):
             User.email == email.data))
         if user is not None:
             raise ValidationError('Пожалуйста, используйте другой адрес электронной почты')
+
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Пользователь', validators=[DataRequired()])
+    about_me = TextAreaField('Обо мне', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Сохранить')
