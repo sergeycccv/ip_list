@@ -30,20 +30,19 @@ if not app.debug:
         mail_handler = SMTPHandler(
             mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
             fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-            toaddrs=app.config['ADMINS'], subject='Ошибка в IP-address',
+            toaddrs=app.config['ADMINS'], subject=f'Ошибка в {app.config['APP_NAME']}',
             credentials=auth, secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/ip_list.log', maxBytes=10240,
-                                       backupCount=10)
+    file_handler = RotatingFileHandler('logs/ip_list.log', maxBytes=10240, backupCount=10)
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('IP_address запущена')
+    app.logger.info(f'{app.config['APP_NAME']} запущена')
 
 from app import routes, models, errors
