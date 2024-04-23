@@ -15,7 +15,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
-login.login_message = 'Пожалуйста, авторизуйтесь для доступа к этой странице.'
+login.login_message = 'Для продолжения работы необходимо войти в систему'
 mail = Mail(app)
 
 if not app.debug:
