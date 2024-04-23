@@ -14,11 +14,11 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Пользователь', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email('Некорректная почта')])
-    password = PasswordField('Пароль', validators=[DataRequired()])
+    username = StringField('Пользователь', validators=[DataRequired('Введите имя пользователя')])
+    email = StringField('Email', validators=[DataRequired('Введите email'), Email('Некорректный email')])
+    password = PasswordField('Пароль', validators=[DataRequired('Придумайте пароль')])
     password2 = PasswordField('Подтверждение пароля', \
-                              validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')])
+                              validators=[DataRequired('Введите пароль еще раз'), EqualTo('password', message='Пароли не совпадают')])
     submit = SubmitField('Зарегистрироваться')
 
     def validate_username(self, username):
