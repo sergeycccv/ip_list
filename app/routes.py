@@ -1,13 +1,13 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, EmptyForm, ResetPasswordRequestForm, ResetPasswordForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app import db
 from app.models import User, Post
 from urllib.parse import urlsplit
 from datetime import datetime, timezone
 import sqlalchemy as sa
-from app.forms import EmptyForm
+from app.email import send_password_reset_email
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -27,8 +27,7 @@ def index():
     next_url = url_for('index', page=posts.next_num) if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
     return render_template('index.html', title='Главная страница', form=form,
-                           posts=posts.items, next_url=next_url,
-                           prev_url=prev_url)
+                           posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -164,5 +163,36 @@ def explore():
                         per_page=app.config['POSTS_PER_PAGE'], error_out=False)
     next_url = url_for('explore', page=posts.next_num) if posts.has_next else None
     prev_url = url_for('explore', page=posts.prev_num) if posts.has_prev else None
-    return render_template("index.html", title='Исследовать', posts=posts.items,
+    return render_template('index.html', title='Исследовать', posts=posts.items,
                            next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(sa.select(User).where(User.email == form.email.data))
+        if user:
+            send_password_reset_email(user)
+        flash('Проверьте Вашу почту для получения дальнейших инструкций')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Сброс пароля', form=form)
+
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Пароль был успешно изменен')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)

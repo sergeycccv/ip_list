@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     username = StringField('Пользователь', validators=[DataRequired()])
-    email = StringField('Почта', validators=[DataRequired(), Email('Некорректная почта')])
+    email = StringField('Email', validators=[DataRequired(), Email('Некорректная почта')])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password2 = PasswordField('Подтверждение пароля', \
                               validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')])
@@ -60,3 +60,15 @@ class PostForm(FlaskForm):
     post = TextAreaField('Добавить пост', validators=[
         DataRequired('Произошла какая-то ошибка...'), Length(min=1, max=140)])
     submit = SubmitField('Добавить')
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email('Некорректная почта')])
+    submit = SubmitField('Сбросить пароль')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Повторите пароль', validators=[DataRequired(), EqualTo('password', message='Пароли не совпадают')])
+    submit = SubmitField('Сохранить')
