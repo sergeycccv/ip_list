@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Произошла непредвиденная ошибка</h1>
-    <p>Администратор был уведомлен. Приносим извинения за доставленные неудобства!</p>
-    <p><a href="{{ url_for('index') }}">Назад</a></p>
+
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <div class="text-center">
+            <h1 class="display-1 fw-bold">500</h1>
+            <p class="fs-3"> <span class="text-danger">Ошибка!</span> Администратор был уведомлен.</p>
+            <p class="lead">
+                Приносим извинения за доставленные неудобства!
+            </p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">На главную</a>
+        </div>
+    </div>
+
 {% endblock %}
