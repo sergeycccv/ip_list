@@ -6,8 +6,8 @@
             <td width="256px"><img src="{{ user.avatar(256) }}"></td>
             <td>
                 <h1>{{ user.username }}</h1>
+                {% if user.last_seen %}<p>Последнее посещение: {{ moment(user.last_seen).format('D MMM YYYY в h:mm') }}.</p>{% endif %}
                 {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                {% if user.last_seen %}<p>Последнее посещение: {{ user.last_seen }}</p>{% endif %}
                 <p>{{ user.followers_count() }} подписчики, {{ user.following_count() }} подписан.</p>
                 {% if user == current_user %}
                 <p><a href="{{ url_for('edit_profile') }}">Редактировать профиль</a></p>
@@ -15,14 +15,14 @@
                 <p>
                     <form action="{{ url_for('follow', username=user.username) }}" method="post">
                         {{ form.hidden_tag() }}
-                        {{ form.submit(value='Follow', class_='btn btn-primary') }}
+                        {{ form.submit(value='Подписаться', class_='btn btn-primary') }}
                     </form>
                 </p>
                 {% else %}
                 <p>
                     <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
                         {{ form.hidden_tag() }}
-                        {{ form.submit(value='Unfollow', class_='btn btn-primary') }}
+                        {{ form.submit(value='Отписаться', class_='btn btn-primary') }}
                     </form>
                 </p>
                 {% endif %}
@@ -33,15 +33,15 @@
         {% include '_post.html' %}
     {% endfor %}
     <nav aria-label="Post navigation">
-        <ul class="pagination">
+        <ul class="pagination justify-content-center">
             <li class="page-item{% if not prev_url %} disabled{% endif %}">
                 <a class="page-link" href="{{ prev_url }}">
-                    <span aria-hidden="true">&larr;</span> Newer posts
+                    <span aria-hidden="true">&larr;</span> Назад
                 </a>
             </li>
             <li class="page-item{% if not next_url %} disabled{% endif %}">
                 <a class="page-link" href="{{ next_url }}">
-                    Older posts <span aria-hidden="true">&rarr;</span>
+                    Вперёд <span aria-hidden="true">&rarr;</span>
                 </a>
             </li>
         </ul>

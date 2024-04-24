@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_moment import Moment
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -17,6 +18,8 @@ login = LoginManager(app)
 login.login_view = 'login'
 login.login_message = 'Для продолжения работы необходимо войти в систему'
 mail = Mail(app)
+moment = Moment(app)
+#moment.locale('ru')
 
 if not app.debug:
 
