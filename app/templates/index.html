@@ -6,7 +6,7 @@
     <h1>Привет, {{ current_user.username }}!</h1>
     
     {% if form %}
-    {{ wtf.quick_form(form) }}
+        {{ wtf.quick_form(form) }}
     {% endif %}
 
     {% for post in posts %}
